@@ -42,5 +42,7 @@ jobs:
       - if: github.event_name != 'pull_request'
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
+          REGISTRY_USERNAME: ${{ github.actor }}
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           DIGEST: ${{ steps.push.outputs.digest }}
-        run: cosign sign -y --key env://COSIGN_PRIVATE_KEY "${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}"
+        run: cosign sign -y --key env://COSIGN_PRIVATE_KEY --registry-username "${REGISTRY_USERNAME}" --registry-password "${REGISTRY_PASSWORD}" "${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}"
