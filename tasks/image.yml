@@ -27,7 +27,7 @@ tasks:
     cmds:
       - mkdir -p output
       - >-
-        sudo podman run --rm -it --privileged --pull=newer --net=host --security-opt label=type:unconfined_t -v {{.CONFIG}}:/config.toml:ro -v ./output:/output -v /var/lib/containers/storage:/var/lib/containers/storage {{.BIB_IMAGE}} --type {{.TYPE}} --use-librepo=True --rootfs btrfs localhost/{{.IMAGE_NAME}}:{{.DEFAULT_TAG}}
+        sudo podman run --rm -it --privileged --pull=newer --net=host --security-opt label=type:unconfined_t -v ./{{.CONFIG}}:/config.toml:ro -v ./output:/output -v /var/lib/containers/storage:/var/lib/containers/storage {{.BIB_IMAGE}} --type {{.TYPE}} --use-librepo=True --rootfs btrfs localhost/{{.IMAGE_NAME}}:{{.DEFAULT_TAG}}
   run-vm-qcow2:
     desc: Boot the qcow2 in a VM (open http://localhost:8006)
     cmd: >-
