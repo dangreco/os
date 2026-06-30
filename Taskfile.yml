@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+silent: true
+
+includes:
+  yaml: ./tasks/yaml.yml
+  shell: ./tasks/shell.yml
+  image: ./tasks/image.yml
+
+vars:
+  IMAGE_NAME: os
+  DEFAULT_TAG: latest
+
+tasks:
+  default:
+    desc: List tasks
+    cmd: task --list
+
+  check:
+    desc: Check for linting/formatting errors
+    deps: ['yaml:check', 'shell:check']
+
+  build:
+    desc: Build the OCI image locally
+    cmd: podman build -t {{.IMAGE_NAME}}:{{.DEFAULT_TAG}} .
+
+  format:
+    desc: Fix linting/formatting
+    aliases: [fmt]
+    deps: ['yaml:format', 'shell:format']
+
+  clean:
+    desc: Remove built image and disk artifacts
+    cmds:
+      - podman rmi -f {{.IMAGE_NAME}}:{{.DEFAULT_TAG}} 2>/dev/null || true
+      - rm -rf output

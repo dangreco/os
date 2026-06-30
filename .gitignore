@@ -1,0 +1,6 @@
+/.zed
+/.pre-commit-config.yaml
+/.envrc
+/.direnv
+/output
+cosign.key

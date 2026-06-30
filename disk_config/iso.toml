@@ -1,0 +1,4 @@
+[[customizations.user]]
+name = "dan"
+password = "dan"  # TODO: test-only credential
+groups = ["wheel"]

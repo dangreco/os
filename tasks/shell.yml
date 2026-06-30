@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+tasks:
+  check:
+    cmds:
+      - shfmt -d build_files
+      - shellcheck build_files/*.sh
+  format:
+    cmd: shfmt -w build_files
