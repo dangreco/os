@@ -1,0 +1,102 @@
+# Android device access for adb / fastboot.
+#
+# Grants the locally logged-in desktop user access to the raw USB device via
+# systemd's uaccess ACL (no group membership required, which matters on an
+# image where the user account is only created at install time). GROUP=dialout
+# is set as a fallback for non-seat sessions. Vendor IDs track the community
+# android-udev-rules list. (udev has no inline comments, so vendor names sit on
+# their own lines above each rule.)
+
+SUBSYSTEM!="usb", GOTO="android_rules_end"
+ACTION!="add", GOTO="android_rules_end"
+
+# NEC
+ATTR{idVendor}=="0409", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Gigabyte
+ATTR{idVendor}=="0414", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Kyocera
+ATTR{idVendor}=="0482", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Foxconn
+ATTR{idVendor}=="0489", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Fujitsu
+ATTR{idVendor}=="04c5", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Panasonic
+ATTR{idVendor}=="04da", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Sharp
+ATTR{idVendor}=="04dd", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Samsung
+ATTR{idVendor}=="04e8", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Acer
+ATTR{idVendor}=="0502", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Wexler
+ATTR{idVendor}=="0531", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Nvidia
+ATTR{idVendor}=="0541", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Sony
+ATTR{idVendor}=="054c", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Qualcomm
+ATTR{idVendor}=="05c6", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Micromax
+ATTR{idVendor}=="0763", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Nvidia
+ATTR{idVendor}=="0955", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Broadcom
+ATTR{idVendor}=="0a5c", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# ASUS
+ATTR{idVendor}=="0b05", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# HTC
+ATTR{idVendor}=="0bb4", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Archos
+ATTR{idVendor}=="0e79", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Funai
+ATTR{idVendor}=="0f1c", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Sony Ericsson
+ATTR{idVendor}=="0fce", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Pantech
+ATTR{idVendor}=="10a9", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# LG
+ATTR{idVendor}=="1004", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Hisense
+ATTR{idVendor}=="109b", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Positivo
+ATTR{idVendor}=="1219", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Huawei
+ATTR{idVendor}=="12d1", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Positivo
+ATTR{idVendor}=="1662", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Lenovo
+ATTR{idVendor}=="17ef", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Google
+ATTR{idVendor}=="18d1", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Herotab
+ATTR{idVendor}=="19a5", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# ZTE
+ATTR{idVendor}=="19d2", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Philips / T-Mobile
+ATTR{idVendor}=="1bbb", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Barnes & Noble (Nook)
+ATTR{idVendor}=="2080", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# KT Tech
+ATTR{idVendor}=="2116", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Rockchip
+ATTR{idVendor}=="2207", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# OTGV
+ATTR{idVendor}=="2257", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Motorola
+ATTR{idVendor}=="22b8", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# OPPO
+ATTR{idVendor}=="22d9", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Teleepoch
+ATTR{idVendor}=="2340", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Xiaomi
+ATTR{idVendor}=="2717", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Meizu
+ATTR{idVendor}=="2a45", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# OnePlus
+ATTR{idVendor}=="2a70", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Fairphone
+ATTR{idVendor}=="2ae5", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Dell
+ATTR{idVendor}=="413c", TAG+="uaccess", GROUP="dialout", MODE="0660"
+
+LABEL="android_rules_end"

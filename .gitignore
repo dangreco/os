@@ -3,4 +3,6 @@
 /.envrc
 /.direnv
 /output
+/.task
+/logs.txt
 cosign.key

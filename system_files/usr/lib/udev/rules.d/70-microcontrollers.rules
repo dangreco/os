@@ -1,0 +1,61 @@
+# Microcontroller / embedded dev board access (Arduino, Espressif, STM32,
+# RP2040, Teensy, etc).
+#
+# USB-serial adapters and native-USB boards expose /dev/ttyUSB* or /dev/ttyACM*
+# (tty subsystem); programmers, DFU bootloaders and JTAG probes expose raw USB.
+# Access is granted to the locally logged-in user via systemd's uaccess ACL
+# (no group membership needed at image build time), with GROUP=dialout as a
+# fallback for serial nodes. (udev has no inline comments, so labels sit on
+# their own lines above each rule.)
+
+ACTION!="add|change", GOTO="mcu_rules_end"
+
+# --- USB-to-serial bridge chips (enumerate as ttyUSB/ttyACM) -------------------
+# FTDI FT232/FT2232
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Silicon Labs CP210x
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# WCH CH340/CH341/CH9102
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Prolific PL2303
+SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", TAG+="uaccess", GROUP="dialout", MODE="0660"
+
+# --- Native-USB dev boards (serial / CDC interface) ----------------------------
+# Espressif (ESP32-S2/S3/C3)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="303a", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Arduino SA
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Arduino.org
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2a03", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# SparkFun / Pololu
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1b4f", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Adafruit
+SUBSYSTEM=="tty", ATTRS{idVendor}=="239a", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Raspberry Pi (Pico / RP2040)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2e8a", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# STMicro (Nucleo/Discovery virtual COM)
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# PJRC Teensy / Van Ooijen
+SUBSYSTEM=="tty", ATTRS{idVendor}=="16c0", TAG+="uaccess", GROUP="dialout", MODE="0660"
+
+# --- Programmers, DFU bootloaders & JTAG/SWD probes (raw USB) -------------------
+# ST-Link / STM32 DFU (0483:df11)
+SUBSYSTEM=="usb", ATTR{idVendor}=="0483", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# SEGGER J-Link
+SUBSYSTEM=="usb", ATTR{idVendor}=="1366", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Espressif native USB / JTAG
+SUBSYSTEM=="usb", ATTR{idVendor}=="303a", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# RP2040 BOOTSEL (picotool)
+SUBSYSTEM=="usb", ATTR{idVendor}=="2e8a", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# OpenMoko (Black Magic Probe, etc)
+SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# TI Stellaris/Tiva DFU
+SUBSYSTEM=="usb", ATTR{idVendor}=="1cbe", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# TI (MSP430 / Launchpad, Tiva ICDI)
+SUBSYSTEM=="usb", ATTR{idVendor}=="0451", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Arduino bootloader (e.g. Leonardo/Micro DFU)
+SUBSYSTEM=="usb", ATTR{idVendor}=="2341", TAG+="uaccess", GROUP="dialout", MODE="0660"
+# Teensy HalfKay bootloader
+SUBSYSTEM=="usb", ATTR{idVendor}=="16c0", TAG+="uaccess", GROUP="dialout", MODE="0660"
+
+LABEL="mcu_rules_end"

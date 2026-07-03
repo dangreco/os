@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+# Add every human user (UID >= 1000) to the docker group so they can use the
+# Docker socket without sudo. Idempotent; runs on boot to cover users created
+# after image build (e.g. the gnome-initial-setup first user).
+getent group docker >/dev/null || exit 0
+getent passwd | while IFS=: read -r name _ uid _ _ _ _; do
+	if [ "$uid" -ge 1000 ] && [ "$uid" -lt 60000 ]; then
+		usermod -aG docker "$name" || true
+	fi
+done

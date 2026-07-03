@@ -1,0 +1,12 @@
+[Unit]
+Description=Add human users to the docker group
+ConditionPathExists=/usr/bin/docker
+After=systemd-user-sessions.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/libexec/docker-group-add
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  IMAGE_NAME: os
+  DEFAULT_TAG: latest
+  BIB_IMAGE: quay.io/centos-bootc/bootc-image-builder:latest
+  ROOT: '{{default "" .ROOT}}'
+
+tasks:
+  _oci:
+    internal: true
+    label: build:_oci-{{if .ROOT}}root{{else}}rootless{{end}}
+    requires:
+      vars: [IMAGE_NAME, DEFAULT_TAG]
+    sources:
+      - Containerfile
+      - build_files/**/*
+      - system_files/**/*
+    status:
+      - "{{.ROOT}} podman image exists localhost/{{.IMAGE_NAME}}:{{.DEFAULT_TAG}}"
+    cmds:
+      - "{{.ROOT}} podman build -t localhost/{{.IMAGE_NAME}}:{{.DEFAULT_TAG}} ."
+
+  image:
+    desc: Build the OCI image locally (rootless)
+    cmd:
+      task: _oci
+
+  image-root:
+    desc: Build the OCI image into root storage (used by disk builds)
+    cmd:
+      task: _oci
+      vars:
+        ROOT: sudo
+
+  _bib:
+    internal: true
+    requires:
+      vars: [TYPE, CONFIG]
+    deps: [image-root]
+    cmds:
+      - mkdir -p output
+      - >-
+        sudo podman run --rm -it --privileged --pull=newer --net=host --security-opt label=type:unconfined_t -v ./{{.CONFIG}}:/config.toml:ro -v ./output:/output -v /var/lib/containers/storage:/var/lib/containers/storage {{.BIB_IMAGE}} --type {{.TYPE}} --use-librepo=True --rootfs btrfs localhost/{{.IMAGE_NAME}}:{{.DEFAULT_TAG}} #magic___^_^___line
+  qcow2:
+    desc: Build a qcow2 disk image
+    cmd:
+      task: _bib
+      vars:
+        TYPE: qcow2
+        CONFIG: disk_config/disk.toml
+
+  raw:
+    desc: Build a raw disk image
+    cmd:
+      task: _bib
+      vars:
+        TYPE: raw
+        CONFIG: disk_config/disk.toml
+
+  iso:
+    desc: Build an installable ISO
+    cmd:
+      task: _bib
+      vars:
+        TYPE: iso
+        CONFIG: disk_config/iso.toml

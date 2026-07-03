@@ -1,0 +1,6 @@
+// Allow admins (wheel group) to manage libvirt without a password prompt.
+polkit.addRule(function(action, subject) {
+  if (action.id == "org.libvirt.unix.manage" && subject.isInGroup("wheel")) {
+    return polkit.Result.YES;
+  }
+});

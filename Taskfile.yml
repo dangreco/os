@@ -6,7 +6,8 @@ silent: true
 includes:
   yaml: ./tasks/yaml.yml
   shell: ./tasks/shell.yml
-  image: ./tasks/image.yml
+  build: ./tasks/build.yml
+  vm: ./tasks/vm.yml
 
 vars:
   IMAGE_NAME: os
@@ -23,7 +24,7 @@ tasks:
 
   build:
     desc: Build the OCI image locally
-    cmd: podman build -t {{.IMAGE_NAME}}:{{.DEFAULT_TAG}} .
+    cmd: task build:image
 
   format:
     desc: Fix linting/formatting
@@ -33,5 +34,6 @@ tasks:
   clean:
     desc: Remove built image and disk artifacts
     cmds:
-      - podman rmi -f {{.IMAGE_NAME}}:{{.DEFAULT_TAG}} 2>/dev/null || true
-      - rm -rf output
+      - podman rmi -f localhost/{{.IMAGE_NAME}}:{{.DEFAULT_TAG}} 2>/dev/null || true
+      - sudo podman rmi -f localhost/{{.IMAGE_NAME}}:{{.DEFAULT_TAG}} 2>/dev/null || true
+      - rm -rf output .task
