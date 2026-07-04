@@ -33,6 +33,16 @@ Then move to the signed image (after installing `cosign.pub` into the container 
 sudo bootc switch ghcr.io/dangreco/os:latest
 ```
 
+## Releases
+
+Each release attaches an installable ISO (`os-<version>.iso`) plus a `.sha256` checksum and a
+cosign `.sig`. Verify a download with:
+
+```sh
+sha256sum -c os-<version>.iso.sha256
+cosign verify-blob --key cosign.pub --signature os-<version>.iso.sig os-<version>.iso
+```
+
 ## License
 
 GPL-3.0-or-later.
