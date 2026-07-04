@@ -4,12 +4,6 @@
 name: build-disk
 on:
   workflow_dispatch:
-    inputs:
-      type:
-        description: Disk image type
-        type: choice
-        options: [qcow2, iso]
-        default: iso
 env:
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
   IMAGE_NAME: os
@@ -20,21 +14,19 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - name: Build disk image
+      - name: Build ISO
         run: |
-          CONFIG=disk_config/disk.toml
-          [ "${{ inputs.type }}" = "iso" ] && CONFIG=disk_config/iso.toml
           mkdir -p output
           sudo podman pull "${IMAGE_REGISTRY}/${IMAGE_NAME}:latest"
           sudo podman run --rm --privileged --pull=newer \
             --security-opt label=type:unconfined_t \
             -v /var/lib/containers/storage:/var/lib/containers/storage \
-            -v "$PWD/$CONFIG":/config.toml:ro \
+            -v "$PWD/disk_config/iso.toml":/config.toml:ro \
             -v "$PWD/output":/output \
             quay.io/centos-bootc/bootc-image-builder:latest \
-            --type ${{ inputs.type }} --use-librepo=True --rootfs btrfs \
+            --type iso --use-librepo=True --rootfs btrfs \
             ${IMAGE_REGISTRY}/${IMAGE_NAME}:latest
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: os-${{ inputs.type }}
+          name: os-iso
           path: output/**/*

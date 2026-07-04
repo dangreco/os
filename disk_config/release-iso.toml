@@ -1,6 +1,0 @@
-# Release ISO config.
-#
-# Intentionally ships NO baked user — unlike disk_config/iso.toml (which carries
-# test-only lab/lab credentials for local/dev builds). The Anaconda installer on
-# this ISO prompts for account creation interactively at install time, so the
-# publicly downloadable release asset contains no known credentials.

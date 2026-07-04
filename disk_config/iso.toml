@@ -1,4 +1,9 @@
-[[customizations.user]]
-name = "lab"
-password = "lab"  # test-only credential
-groups = ["wheel"]
+# Interactive installer ISO.
+#
+# An empty custom kickstart makes bootc-image-builder emit a kickstart containing only the
+# auto-injected `ostreecontainer` line, so Anaconda runs its normal interactive flow
+# (disk/partitioning, account, locale) — like the stock Fedora installer. A
+# [customizations.installer.kickstart] block cannot coexist with a [[customizations.user]]
+# block, so no user is baked in.
+[customizations.installer.kickstart]
+contents = ""

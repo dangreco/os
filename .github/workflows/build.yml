@@ -74,7 +74,7 @@ jobs:
           sudo podman run --rm --privileged --pull=newer \
             --security-opt label=type:unconfined_t \
             -v /var/lib/containers/storage:/var/lib/containers/storage \
-            -v "$PWD/disk_config/release-iso.toml":/config.toml:ro \
+            -v "$PWD/disk_config/iso.toml":/config.toml:ro \
             -v "$PWD/output":/output \
             quay.io/centos-bootc/bootc-image-builder:latest \
             --type iso --use-librepo=True --rootfs btrfs \

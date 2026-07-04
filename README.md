@@ -32,10 +32,8 @@ Requires [`task`](https://taskfile.dev) and `podman`. Run `task --list` for the 
 
 ```sh
 task build          # build the OCI image locally
-task build:qcow2    # build a qcow2 disk image
-task build:iso      # build an installable ISO
-task vm:qcow2       # boot the qcow2 in a VM (http://localhost:8006)
-task vm:iso         # boot the installer ISO in a VM
+task build:iso      # build an interactive installer ISO
+task vm:iso         # boot the installer ISO in a VM (http://localhost:8006)
 ```
 
 ## Customize

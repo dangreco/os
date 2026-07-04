@@ -1,4 +1,0 @@
-[[customizations.user]]
-name = "lab"
-password = "lab"  # test-only credential
-groups = ["wheel"]

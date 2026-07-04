@@ -3,10 +3,6 @@
 version: "3"
 
 tasks:
-  qcow2:
-    desc: Boot the qcow2 in a VM (open http://localhost:8006)
-    cmd: >-
-      sudo podman run --rm -it --privileged --pull=newer --publish 127.0.0.1:8006:8006 --device=/dev/kvm --volume ./output/qcow2/disk.qcow2:/boot.qcow2 docker.io/qemux/qemu #magic___^_^___line
   iso:
     desc: Boot the installer ISO in a VM (open http://localhost:8006)
     cmd: >-
