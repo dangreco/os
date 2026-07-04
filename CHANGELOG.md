@@ -2,11 +2,25 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.4 - 2026-07-04
+
+### Bug Fixes
+
+- Make ISO interactive
+
+### Miscellaneous
+
+- Update README.md
+
 ## 2026.07.3 - 2026-07-04
 
 ### Features
 
 - Add s3 publishing
+
+### Other
+
+- Merge pull request #4 from dangreco/release/next (#4)
 
 ## 2026.07.2 - 2026-07-04
 
