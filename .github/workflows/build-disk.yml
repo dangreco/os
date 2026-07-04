@@ -25,12 +25,14 @@ jobs:
           CONFIG=disk_config/disk.toml
           [ "${{ inputs.type }}" = "iso" ] && CONFIG=disk_config/iso.toml
           mkdir -p output
+          sudo podman pull "${IMAGE_REGISTRY}/${IMAGE_NAME}:latest"
           sudo podman run --rm --privileged --pull=newer \
             --security-opt label=type:unconfined_t \
+            -v /var/lib/containers/storage:/var/lib/containers/storage \
             -v "$PWD/$CONFIG":/config.toml:ro \
             -v "$PWD/output":/output \
             quay.io/centos-bootc/bootc-image-builder:latest \
-            --type ${{ inputs.type }} --use-librepo=True \
+            --type ${{ inputs.type }} --use-librepo=True --rootfs btrfs \
             ${IMAGE_REGISTRY}/${IMAGE_NAME}:latest
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
