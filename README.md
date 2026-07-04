@@ -35,8 +35,9 @@ sudo bootc switch ghcr.io/dangreco/os:latest
 
 ## Releases
 
-Each release attaches an installable ISO (`os-<version>.iso`) plus a `.sha256` checksum and a
-cosign `.bundle`. Verify a download with:
+Each release hosts an installable ISO (`os-<version>.iso`) on S3, plus a `.sha256` checksum and
+a cosign `.bundle`. The release notes carry the direct download links; only the current
+production version is kept. Verify a download with:
 
 ```sh
 sha256sum -c os-<version>.iso.sha256

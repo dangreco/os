@@ -58,7 +58,7 @@ jobs:
     if: github.event_name == 'push' && github.ref_type == 'tag'
     runs-on: ubuntu-latest
     permissions:
-      contents: write # upload the ISO asset to the release
+      contents: write # append the S3 download links to the release notes
       packages: read # pull the versioned image from GHCR
     env:
       VERSION: ${{ github.ref_name }}
@@ -89,9 +89,32 @@ jobs:
           sha256sum "os-${VERSION}.iso" > "os-${VERSION}.iso.sha256"
           cosign sign-blob -y --key env://COSIGN_PRIVATE_KEY \
             --bundle "os-${VERSION}.iso.bundle" "os-${VERSION}.iso"
-      - name: Upload assets to the release
+      - name: Stage release artifacts
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          mv "os-${VERSION}.iso" "os-${VERSION}.iso.sha256" "os-${VERSION}.iso.bundle" dist/
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@61815dcd50bd041e203e49132bacad1fd04d2708 # v5.1.1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Upload ISO to S3 (retain only the current version)
+        env:
+          AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
+        run: |
+          set -euo pipefail
+          # --delete removes any prior version's files, so only the current set
+          # remains. Versioned filenames are immutable — cache them aggressively.
+          aws s3 sync dist/ "s3://${AWS_BUCKET}/" \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable"
+      - name: Link the ISO from the release notes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AWS_BUCKET: ${{ secrets.AWS_BUCKET }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
           set -euo pipefail
           # release-tag.yml creates the release before triggering this build, but the
@@ -99,5 +122,7 @@ jobs:
           for _ in $(seq 1 30); do
             gh release view "$VERSION" >/dev/null 2>&1 && break || sleep 10
           done
-          gh release upload "$VERSION" \
-            "os-${VERSION}.iso" "os-${VERSION}.iso.sha256" "os-${VERSION}.iso.bundle" --clobber
+          BASE="https://${AWS_BUCKET}.s3.${AWS_REGION}.amazonaws.com"
+          BODY=$(gh release view "$VERSION" --json body -q .body)
+          gh release edit "$VERSION" --notes "$(printf '%s\n\n## Download\n- ISO: %s/os-%s.iso\n- SHA256: %s/os-%s.iso.sha256\n- cosign bundle: %s/os-%s.iso.bundle\n' \
+            "$BODY" "$BASE" "$VERSION" "$BASE" "$VERSION" "$BASE" "$VERSION")"
