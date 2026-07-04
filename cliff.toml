@@ -1,0 +1,46 @@
+# git-cliff configuration — https://git-cliff.org
+# Generates CHANGELOG.md, release-PR bodies, and GitHub Release notes from
+# conventional commits.
+[changelog]
+header = """
+# Changelog\n
+All notable changes to this project are documented here.\n
+"""
+body = """
+{% if version %}\
+## {{ version }} - {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+## Unreleased
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | striptags | trim | upper_first }}
+{% for commit in commits %}
+- {{ commit.message | split(pat="\n") | first | trim | upper_first }}\
+    {% if commit.remote.pr_number %} (#{{ commit.remote.pr_number }}){% endif %}\
+{% endfor %}
+{% endfor %}\n
+"""
+trim = true
+footer = ""
+
+[git]
+conventional_commits = true
+filter_unconventional = false
+split_commits = false
+protect_breaking_commits = false
+filter_commits = false
+tag_pattern = "[0-9]{4}\\.[0-9]{2}\\.[0-9]+"
+topo_order = false
+sort_commits = "oldest"
+commit_parsers = [
+  { message = "^feat", group = "<!-- 0 -->Features" },
+  { message = "^fix", group = "<!-- 1 -->Bug Fixes" },
+  { message = "^perf", group = "<!-- 2 -->Performance" },
+  { message = "^refactor", group = "<!-- 3 -->Refactor" },
+  { message = "^doc", group = "<!-- 4 -->Documentation" },
+  { message = "^build\\(deps\\)", group = "<!-- 5 -->Dependencies" },
+  { message = "^chore\\(release\\)", skip = true },
+  { message = "^chore", group = "<!-- 6 -->Miscellaneous" },
+  { message = "^ci", group = "<!-- 6 -->Miscellaneous" },
+  { message = ".*", group = "<!-- 7 -->Other" },
+]
