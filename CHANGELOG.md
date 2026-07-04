@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.1 - 2026-07-04
+
+### Features
+
+- Add release iso
+
 ## 2026.07.0 - 2026-07-04
 
 ### Features
@@ -22,5 +28,6 @@ All notable changes to this project are documented here.
 ### Other
 
 - Add udev rules, packages, improve build scripts
+- Merge pull request #1 from dangreco/release/next (#1)
 
 
