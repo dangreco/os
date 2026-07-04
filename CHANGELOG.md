@@ -2,11 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.2 - 2026-07-04
+
+### Bug Fixes
+
+- Fix cosign step
+
 ## 2026.07.1 - 2026-07-04
 
 ### Features
 
 - Add release iso
+
+### Other
+
+- Merge pull request #2 from dangreco/release/next (#2)
 
 ## 2026.07.0 - 2026-07-04
 
