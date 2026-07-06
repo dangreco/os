@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.5 - 2026-07-06
+
+### Bug Fixes
+
+- Use old signing bundle
+
 ## 2026.07.4 - 2026-07-04
 
 ### Bug Fixes
@@ -11,6 +17,10 @@ All notable changes to this project are documented here.
 ### Miscellaneous
 
 - Update README.md
+
+### Other
+
+- Merge pull request #5 from dangreco/release/next (#5)
 
 ## 2026.07.3 - 2026-07-04
 
