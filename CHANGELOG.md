@@ -2,11 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.8 - 2026-07-07
+
+### Bug Fixes
+
+- Transient root
+
 ## 2026.07.7 - 2026-07-07
 
 ### Bug Fixes
 
 - Use proper cosign args
+
+### Other
+
+- Merge pull request #8 from dangreco/release/next (#8)
 
 ## 2026.07.6 - 2026-07-07
 
