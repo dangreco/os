@@ -64,3 +64,15 @@ systemctl enable libvirtd.socket
 # --- Toggle services (TODO) ----------------------------------------------------
 # systemctl enable  <unit>.service
 # systemctl disable <unit>.service
+
+# --- Initramfs -----------------------------------------------------------------
+# Regenerate the initramfs so /etc/ostree/prepare-root.conf (composefs + transient
+# root, from system_files) is embedded. ostree-prepare-root runs inside the
+# initramfs and reads that config from there -- not from the deployed /etc -- so
+# dropping the file in above has no effect at boot until the initramfs is rebuilt.
+# Must run after the system_files copy so the current config is picked up.
+KERNEL_VERSION="$(rpm -q --qf '%{VERSION}-%{RELEASE}.%{ARCH}\n' kernel-core | tail -n1)"
+dracut --force --no-hostonly --reproducible --zstd -v \
+	--add ostree \
+	"/usr/lib/modules/${KERNEL_VERSION}/initramfs.img" \
+	"${KERNEL_VERSION}"
