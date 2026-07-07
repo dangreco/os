@@ -2,11 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.9 - 2026-07-07
+
+### Bug Fixes
+
+- Regenerate initramfs
+
 ## 2026.07.8 - 2026-07-07
 
 ### Bug Fixes
 
 - Transient root
+
+### Other
+
+- Merge pull request #9 from dangreco/release/next (#9)
 
 ## 2026.07.7 - 2026-07-07
 
