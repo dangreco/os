@@ -51,7 +51,7 @@ jobs:
           REGISTRY_USERNAME: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
           DIGEST: ${{ steps.push.outputs.digest }}
-        run: cosign sign -y --key env://COSIGN_PRIVATE_KEY --new-bundle-format=false --registry-username "${REGISTRY_USERNAME}" --registry-password "${REGISTRY_PASSWORD}" "${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}"
+        run: cosign sign -y --key env://COSIGN_PRIVATE_KEY --new-bundle-format=false --use-signing-config=false --registry-referrers-mode=legacy --registry-username "${REGISTRY_USERNAME}" --registry-password "${REGISTRY_PASSWORD}" "${IMAGE_REGISTRY}/${IMAGE_NAME}@${DIGEST}"
 
   # Build an installable ISO from the freshly-published :<version> image and attach it
   # (plus a SHA256 checksum and a cosign bundle) to the release the tag created.
