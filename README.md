@@ -4,7 +4,7 @@ Atomic Fedora Silverblue, personalized. A custom [Universal Blue](https://univer
 `silverblue-main` image with my packages, services, and config baked in — built, signed, and
 shipped as an OCI image plus an installable ISO.
 
-[![build](https://img.shields.io/github/actions/workflow/status/dangreco/os/build.yml?branch=main&style=flat-square)](https://github.com/dangreco/os/actions/workflows/build.yml)
+[![build](https://img.shields.io/github/actions/workflow/status/dangreco/os/build.yml?style=flat-square)](https://github.com/dangreco/os/actions/workflows/build.yml)
 [![release](https://img.shields.io/github/v/release/dangreco/os?style=flat-square)](https://github.com/dangreco/os/releases/latest)
 [![license](https://img.shields.io/github/license/dangreco/os?style=flat-square)](./LICENSE)
 [![base](https://img.shields.io/badge/base-Fedora%2044-51A2DA?style=flat-square&logo=fedora&logoColor=white)](https://universal-blue.org)

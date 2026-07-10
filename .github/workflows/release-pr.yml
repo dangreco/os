@@ -2,12 +2,12 @@
 # yaml-language-server: $schema=https://www.schemastore.org/github-workflow.json
 # yamllint disable rule:line-length rule:comments
 name: release-pr
-# Reconciles a single long-lived release PR (branch: release/next).
+# Reconciles a single long-lived release PR (branch: release/next) against dev.
 # The version is recomputed from today's UTC date + existing tags on every run,
 # so month-rollover re-targeting and the patch-reset-to-0 happen automatically.
 on:
   push:
-    branches: [main]
+    branches: [dev]
     # Ignore the release-merge commit itself (it only touches these files);
     # release-tag.yml handles that instead. Avoids a race that would re-open a
     # duplicate ".0" PR before the new tag exists.
@@ -15,7 +15,9 @@ on:
       - VERSION
       - CHANGELOG.md
   schedule:
-    - cron: "0 3 * * *" # daily: flips the open PR to YYYY.MM.0 on the 1st with no commits
+    # daily: flips the open PR to YYYY.MM.0 on the 1st with no commits.
+    # Monday runs additionally force a release so base-image updates ship as a tag.
+    - cron: "0 3 * * *"
   workflow_dispatch:
 concurrency:
   group: release-pr
@@ -36,6 +38,7 @@ jobs:
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
+          ref: dev # scheduled/dispatch runs must reconcile against dev, not the default branch
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
       - id: version
@@ -55,13 +58,21 @@ jobs:
           else
             COUNT=$(git rev-list --count "${LAST_TAG}..HEAD")
           fi
-          [ "$COUNT" -gt 0 ] && SHOULD=true || SHOULD=false
+          # Weekly (Monday) scheduled run forces a release with no commits so the
+          # image is rebuilt against a fresh base and shipped as a signed tag.
+          FORCE=false
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%u)" = "1" ]; then
+            FORCE=true
+          fi
+          if [ "$COUNT" -gt 0 ] || [ "$FORCE" = "true" ]; then SHOULD=true; else SHOULD=false; fi
           {
             echo "next=$NEXT"
             echo "day=$(date -u +%d)"
+            echo "count=$COUNT"
+            echo "force=$FORCE"
             echo "should_release=$SHOULD"
           } >> "$GITHUB_OUTPUT"
-          echo "Next version: $NEXT (commits since ${LAST_TAG:-<none>}: $COUNT)"
+          echo "Next version: $NEXT (commits since ${LAST_TAG:-<none>}: $COUNT, force=$FORCE)"
       - name: Generate CHANGELOG.md
         if: steps.version.outputs.should_release == 'true'
         uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4.8.0
@@ -78,18 +89,36 @@ jobs:
           args: --unreleased --tag ${{ steps.version.outputs.next }} --strip header --output body.md
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+      - name: Note base-image refresh for empty releases
+        # A forced weekly release has no commits, so git-cliff produces an empty
+        # body/changelog entry. Add a one-line note so the release isn't blank.
+        if: steps.version.outputs.should_release == 'true' && steps.version.outputs.count == '0'
+        env:
+          NEXT: ${{ steps.version.outputs.next }}
+        run: |
+          set -euo pipefail
+          printf -- '- Base image refresh\n' > body.md
+          {
+            printf '## %s - %s\n\n' "$NEXT" "$(date -u +%Y-%m-%d)"
+            printf -- '- Base image refresh\n\n'
+          } > refresh-entry.md
+          # Insert the entry directly under the changelog header (after the intro line).
+          awk 'NR==FNR{e=e $0 ORS; next} {print} /^All notable changes/{print ""; printf "%s", e}' \
+            refresh-entry.md CHANGELOG.md > CHANGELOG.new && mv CHANGELOG.new CHANGELOG.md
+          rm -f refresh-entry.md
       - name: Reconcile release PR
         if: steps.version.outputs.should_release == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           NEXT: ${{ steps.version.outputs.next }}
           DAY: ${{ steps.version.outputs.day }}
+          FORCE: ${{ steps.version.outputs.force }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           echo "$NEXT" > VERSION
-          # Always rebuild release/next as main + the version bump, so the PR stays clean.
+          # Always rebuild release/next as dev + the version bump, so the PR stays clean.
           git checkout -B release/next
           git add VERSION CHANGELOG.md
           git commit -m "chore(release): $NEXT"
@@ -98,10 +127,11 @@ jobs:
           if [ -n "$PR" ]; then
             gh pr edit "$PR" --title "chore(release): $NEXT" --body-file body.md
           else
-            gh pr create --base main --head release/next \
+            gh pr create --base dev --head release/next \
               --title "chore(release): $NEXT" --body-file body.md
           fi
-          # On the 1st, auto-merge the monthly ".0" once required checks pass.
-          if [ "$DAY" = "01" ]; then
+          # Auto-merge the monthly ".0" (on the 1st) and the weekly base-image refresh
+          # once required checks pass; both should ship without manual action.
+          if [ "$DAY" = "01" ] || [ "$FORCE" = "true" ]; then
             gh pr merge release/next --squash --auto
           fi

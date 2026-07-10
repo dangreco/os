@@ -4,12 +4,9 @@
 name: build
 on:
   push:
-    branches: [main]
     tags: ["[0-9][0-9][0-9][0-9].[0-9][0-9].*"] # release tags -> publish versioned image
   pull_request:
-    branches: [main]
-  schedule:
-    - cron: "0 6 * * 1" # weekly: pick up base-image updates
+    branches: [dev]
   workflow_dispatch:
 env:
   IMAGE_NAME: os
@@ -37,7 +34,7 @@ jobs:
             VERSION=${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
           oci: true
       - id: push
-        if: github.event_name != 'pull_request'
+        if: github.ref_type == 'tag'
         uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2.8
         with:
           image: ${{ env.IMAGE_NAME }}
@@ -45,7 +42,7 @@ jobs:
           registry: ${{ env.IMAGE_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - if: github.event_name != 'pull_request'
+      - if: github.ref_type == 'tag'
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.SIGNING_SECRET }}
           REGISTRY_USERNAME: ${{ github.actor }}

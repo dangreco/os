@@ -2,11 +2,12 @@
 # yaml-language-server: $schema=https://www.schemastore.org/github-workflow.json
 # yamllint disable rule:line-length rule:comments
 name: release-tag
-# Fires when a release PR merges (VERSION changes on main). Tags the release and
-# creates a GitHub Release; the tag push then triggers the versioned image build.
+# Fires when a release PR merges (VERSION changes on dev). Tags the release,
+# fast-forwards main to the release commit, and creates a GitHub Release; the
+# tag push then triggers the versioned image build.
 on:
   push:
-    branches: [main]
+    branches: [dev]
     paths:
       - VERSION
 jobs:
@@ -40,6 +41,12 @@ jobs:
           git push origin "$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "created=true" >> "$GITHUB_OUTPUT"
+      - name: Fast-forward main to the release commit
+        if: steps.tag.outputs.created == 'true'
+        # HEAD is dev's tip (the release commit). This creates main if it is missing
+        # and fast-forwards it otherwise — main is always an ancestor of dev by
+        # construction, so a non-fast-forward here signals real divergence and should fail.
+        run: git push origin "HEAD:refs/heads/main"
       - name: Generate release notes
         if: steps.tag.outputs.created == 'true'
         uses: orhun/git-cliff-action@f50e11560dce63f7c33227798f90b924471a88b5 # v4.8.0
