@@ -2,11 +2,21 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.10 - 2026-07-10
+
+### Features
+
+- Add ulauncher
+
 ## 2026.07.9 - 2026-07-07
 
 ### Bug Fixes
 
 - Regenerate initramfs
+
+### Other
+
+- Merge pull request #10 from dangreco/release/next (#10)
 
 ## 2026.07.8 - 2026-07-07
 
