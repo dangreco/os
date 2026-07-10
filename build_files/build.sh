@@ -30,7 +30,8 @@ dnf5 install -y \
 	virt-manager libvirt qemu-kvm \
 	podman-compose \
 	android-tools \
-	fish
+	fish \
+	ulauncher
 
 # COPR example:
 #   dnf5 -y copr enable <owner>/<repo>
