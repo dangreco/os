@@ -31,7 +31,6 @@ dnf5 install -y \
 	podman-compose \
 	android-tools \
 	fish \
-	ulauncher \
 	nmap
 
 # COPR example:
