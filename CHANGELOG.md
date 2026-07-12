@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.11 - 2026-07-12
+
+### Miscellaneous
+
+- Remove ulauncher
+
+### Other
+
+- Add Wine and runtime essentials
+- Fix Wine install: use wine meta-package deps, correct gecko name
+- Merge pull request #16 from dangreco/feat/wine (#16)
+
 ## 2026.07.10 - 2026-07-10
 
 ### Features
@@ -12,6 +24,10 @@ All notable changes to this project are documented here.
 ### Miscellaneous
 
 - Improve branching strategy
+
+### Other
+
+- Merge pull request #14 from dangreco/release/next (#14)
 
 ## 2026.07.9 - 2026-07-07
 
