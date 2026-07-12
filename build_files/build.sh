@@ -49,6 +49,15 @@ dnf5 install -y \
 #     thumbnailers) -- not used by Firefox, but completes system-wide playback.
 dnf5 install -y mozilla-openh264 gstreamer1-plugins-ugly
 
+# --- Wine ---------------------------------------------------------------------
+# The wine meta-package pulls in everything needed for a working Windows
+# compatibility layer: wine-core, wine-mono (.NET runtime), mingw32/64-wine-gecko
+# (HTML rendering), wine-pulseaudio (audio via PipeWire), wine-desktop (file
+# associations), and wine-winefonts. winetricks is not a dependency of wine, so
+# it is listed explicitly -- it installs redistributables (VC++, DirectX, core
+# fonts) on demand.
+dnf5 install -y wine winetricks
+
 # --- Shell ---------------------------------------------------------------------
 # Make fish the default login shell for new users; home-manager (../dotfiles)
 # supplies the fish configuration. The default SHELL in /etc/default/useradd is
