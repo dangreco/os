@@ -50,14 +50,13 @@ dnf5 install -y \
 dnf5 install -y mozilla-openh264 gstreamer1-plugins-ugly
 
 # --- Wine ---------------------------------------------------------------------
-# Wine and the runtime components needed for a working out-of-the-box Windows
-# compatibility layer. wine-mono / wine-gecko supply the .NET and HTML-rendering
-# runtimes many Windows apps and installers expect; wine-pulseaudio routes audio
-# through PipeWire (via pipewire-pulse); wine-desktop adds file associations and
-# menu integration; winetricks (not pulled in by the wine meta-package) installs
-# redistributables like VC++, DirectX, and core fonts on demand.
-dnf5 install -y \
-	wine wine-mono wine-gecko wine-pulseaudio wine-desktop winetricks
+# The wine meta-package pulls in everything needed for a working Windows
+# compatibility layer: wine-core, wine-mono (.NET runtime), mingw32/64-wine-gecko
+# (HTML rendering), wine-pulseaudio (audio via PipeWire), wine-desktop (file
+# associations), and wine-winefonts. winetricks is not a dependency of wine, so
+# it is listed explicitly -- it installs redistributables (VC++, DirectX, core
+# fonts) on demand.
+dnf5 install -y wine winetricks
 
 # --- Shell ---------------------------------------------------------------------
 # Make fish the default login shell for new users; home-manager (../dotfiles)
