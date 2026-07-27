@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 2026.07.12 - 2026-07-27
+
+- Base image refresh
+
+
 ## 2026.07.11 - 2026-07-12
 
 ### Miscellaneous
@@ -13,6 +18,7 @@ All notable changes to this project are documented here.
 - Add Wine and runtime essentials
 - Fix Wine install: use wine meta-package deps, correct gecko name
 - Merge pull request #16 from dangreco/feat/wine (#16)
+- Merge pull request #15 from dangreco/release/next (#15)
 
 ## 2026.07.10 - 2026-07-10
 
