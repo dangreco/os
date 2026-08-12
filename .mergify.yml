@@ -16,3 +16,11 @@ queue_rules:
       title: pr-title
       body: inherit
       trailers: []
+merge_protections:
+  - name: build
+    if: []
+    success_conditions:
+      - check-success = build
+merge_protections_settings:
+  auto_merge_conditions:
+    - title ~= chore\(deps\):.*
