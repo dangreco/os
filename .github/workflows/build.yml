@@ -20,10 +20,40 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        with:
+          fetch-depth: 0 # the gate below diffs the PR head against its base
+      # `build` is a required status check on dev, so this job must always run and
+      # report. A `paths:` filter on the trigger would leave the check pending
+      # forever on doc-only PRs; instead the costly steps below are gated and the
+      # job still finishes green.
+      - id: gate
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          # Only these paths can change the image: the Containerfile, the scripts
+          # it executes, the tree it bakes in, and this workflow itself.
+          RELEVANT='^(Containerfile$|build_files/|system_files/|\.github/workflows/build\.yml$)'
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            echo "Not a pull request — building." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          CHANGED=$(git diff --name-only "${BASE_SHA}...${HEAD_SHA}")
+          if grep -qE "$RELEVANT" <<< "$CHANGED"; then
+            echo "build=true" >> "$GITHUB_OUTPUT"
+            printf 'Image inputs changed — building.\n\n```\n%s\n```\n' "$CHANGED" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "build=false" >> "$GITHUB_OUTPUT"
+            printf 'No image inputs changed — image build skipped.\n\n```\n%s\n```\n' "$CHANGED" >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - if: steps.gate.outputs.build == 'true'
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         with:
           cosign-release: 'v3.1.1'
       - id: build
+        if: steps.gate.outputs.build == 'true'
         uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
         with:
           containerfiles: ./Containerfile
