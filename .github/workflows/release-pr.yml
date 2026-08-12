@@ -131,7 +131,10 @@ jobs:
               --title "chore(release): $NEXT" --body-file body.md
           fi
           # Auto-merge the monthly ".0" (on the 1st) and the weekly base-image refresh
-          # once required checks pass; both should ship without manual action.
+          # once required checks pass; both should ship without manual action. Enabling
+          # auto-merge is best-effort: GitHub rejects it when the repo setting is off or
+          # the PR is immediately mergeable, and that must not fail the reconcile.
           if [ "$DAY" = "01" ] || [ "$FORCE" = "true" ]; then
-            gh pr merge release/next --squash --auto
+            gh pr merge release/next --squash --auto \
+              || echo "::warning::could not enable auto-merge; leaving release/next for manual merge"
           fi
