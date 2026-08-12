@@ -63,8 +63,8 @@ chgrp "${GID_ONEPASSWORDCLI}" /usr/bin/op
 chmod g+s /usr/bin/op
 
 # MCP server helper: setgid to the onepassword-mcp group (app verifies callers).
-chgrp "${GID_ONEPASSWORDMCP}" /usr/lib/1Password/onepassword-mcp
-chmod g+s /usr/lib/1Password/onepassword-mcp
+chgrp "${GID_ONEPASSWORDMCP}" /usr/lib/1Password/1password-mcp
+chmod g+s /usr/lib/1Password/1password-mcp
 
 # Desktop entry + icons into /usr/share.
 install -Dm0644 /usr/lib/1Password/resources/1password.desktop \
