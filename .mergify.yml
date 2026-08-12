@@ -1,9 +1,6 @@
+---
 queue_rules:
   - name: default
-    # Auto-queue PRs that meet queue_conditions instead of waiting for the
-    # manual "Queue this pull request" checkbox. Deprecated successor:
-    # merge_protections_settings.auto_merge_conditions, which additionally
-    # requires enabling Mergify "Merge Protections" in the dashboard.
     branch_protection_injection_mode: queue
     queue_conditions:
       - title ~= chore\(deps\):.*
@@ -14,5 +11,11 @@ queue_rules:
       title: pr-title
       body: inherit
       trailers: []
+merge_protections:
+  - name: build
+    if: []
+    success_conditions:
+      - check-success = build
 merge_protections_settings:
-  auto_merge_conditions: true
+  auto_merge_conditions:
+    - title ~= chore\(deps\):.*
