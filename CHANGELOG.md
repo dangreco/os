@@ -2,10 +2,31 @@
 
 All notable changes to this project are documented here.
 
-## 2026.07.12 - 2026-07-27
+## 2026.08.0 - 2026-08-12
 
-- Base image refresh
+### Bug Fixes
 
+- Broken 1Password MCP path and non-fatal auto-merge
+
+### Miscellaneous
+
+- Auto-merge Dependabot PRs into dev via required status check (#24) (#24)
+- Bump redhat-actions/push-to-registry from 2.8 to 3.0.0 (#26) (#26)
+- Remove bespoke dependabot-automerge workflow (#28) (#28)
+- Skip the image build when no image inputs change (#29) (#29)
+- Require CodeRabbit review before merging dependency PRs (#30) (#30)
+- Auto-queue dependency PRs instead of requiring the checkbox (#31) (#31)
+- Upgrade configuration to current format (#32) (#32)
+- Bump actions/checkout from 7.0.0 to 7.0.1 (#18) (#18)
+- Bump aws-actions/configure-aws-credentials (#21) (#21)
+- Bump redhat-actions/buildah-build from 2.13 to 3.0.2 (#25) (#25)
+
+### Other
+
+- Merge pull request #23 from dangreco/fix/actions-1password-automerge (#23)
+- Update merge queue configuration (#27) (#27)
+- Update merge protections (#33) (#33)
+- Update merge protections (#34) (#34)
 
 ## 2026.07.11 - 2026-07-12
 
