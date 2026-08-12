@@ -1,8 +1,11 @@
+---
 queue_rules:
   - name: default
     branch_protection_injection_mode: queue
     queue_conditions:
       - title ~= chore\(deps\):.*
+      # Require an approval review from CodeRabbit before a dependency PR is merged.
+      - approved-reviews-by = coderabbitai
     merge_method: squash
     commit_message_format:
       title: pr-title
