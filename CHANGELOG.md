@@ -2,10 +2,13 @@
 
 All notable changes to this project are documented here.
 
-## 2026.09.0 - 2026-09-07
+## 2026.09.1 - 2026-09-13
 
-- Base image refresh
+### Miscellaneous
 
+- Bump redhat-actions/buildah-build from 3.0.2 to 3.1.0 (#39) (#39)
+- Bump orhun/git-cliff-action from 4.8.0 to 4.9.0 (#41) (#41)
+- Bump aws-actions/configure-aws-credentials (#42) (#42)
 
 ## 2026.08.1 - 2026-08-12
 
