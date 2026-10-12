@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## 2026.10.0 - 2026-10-05
+## 2026.10.1 - 2026-10-12
 
 - Base image refresh
 
