@@ -2,7 +2,7 @@ FROM scratch AS ctx
 COPY build_files /
 COPY system_files /system_files
 
-FROM ghcr.io/ublue-os/silverblue-main:44
+FROM ghcr.io/ublue-os/silverblue-main:45
 
 ARG VERSION=latest
 LABEL org.opencontainers.image.version="${VERSION}"
